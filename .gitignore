@@ -1,0 +1,63 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.manifest
+*.spec
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Environment
+.env
+.env.*
+.venv/
+
+
+.logs/
+
+# Data
+*.sqlite3
+data/*.json
+
+
+
+
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Others
+*.bak
+*.tmp
+*.swp
+*.swo
+
+# Test
+*.coverage
+.coverage
+htmlcov/
+
+# Session
+*.session
+
+# Excel
+*.xlsx
+*.xls
+
+# Misc
+*.orig
+*.rej
