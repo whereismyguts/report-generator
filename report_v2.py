@@ -3,6 +3,7 @@ from datetime import datetime
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, PatternFill
 import argparse
+from pathlib import Path
 
 # pip install openpyxl colorama
 try:
@@ -198,9 +199,11 @@ if __name__ == "__main__":
         # get first day of the report data to use in the report filename
         first_day = report_data.get('days', [{}])[0].get('date', 'unknown')
 
-        month, year = first_day.split('-')[:2]
-        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-        output_xls_filename = f"reports/Anton_Karmanov_{month}_{year}_v{timestamp}.xlsx"
+        month_str, year = first_day.split('-')[:2]
+        output_xls_filename = Path(reports_dir) / f"Anton_Karmanov_{month_str}_{year}_v{month}.xlsx"
+
+        import os
+        os.makedirs(reports_dir, exist_ok=True)
 
         colored_print("Starting report generation...", "bright_blue", "🚀")
         create_xls_from_json(report_data, output_xls_filename)

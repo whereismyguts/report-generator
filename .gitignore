@@ -61,3 +61,10 @@ htmlcov/
 # Misc
 *.orig
 *.rej
+
+*.log
+
+## 
+
+reports/
+data/

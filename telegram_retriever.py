@@ -26,10 +26,10 @@ except ImportError:
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('.logs/telegram_retriever.log'),
-        logging.StreamHandler()
-    ]
+    # handlers=[
+    #     logging.FileHandler('.logs/telegram_retriever.log'),
+    #     logging.StreamHandler()
+    # ]
 )
 logger = logging.getLogger(__name__)
 
@@ -77,7 +77,6 @@ class TelegramLogRetriever:
 
             async for message in self.client.iter_messages(
                 channel_id,
-
                 reverse=True
             ):
 
@@ -86,7 +85,7 @@ class TelegramLogRetriever:
                     continue
 
                 print(f"Processing message ID: {message.id}, Date: {message.date}")
-                print(f'Message: {message}')
+                # print(f'Message: {message}')
                 if message.text:
                     msg_data = {
                         'id': message.id,
