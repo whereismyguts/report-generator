@@ -41,10 +41,10 @@ def run_excel(json_path, reports_dir, month):
     logger.info(f"📊 Creating Excel report for {month}")
     formatter = ReportFormatter(reports_dir)
     data = formatter.load_json_data(json_path)
-    
+
     if not data:
         raise Exception("No report data loaded")
-    
+
     excel_path = formatter.create_excel_report(data)
     return excel_path
 
@@ -72,15 +72,15 @@ async def main():
     parser.add_argument('--data-dir', default='data', help='Directory for raw and processed data')
     parser.add_argument('--reports-dir', default='reports', help='Directory for reports')
     parser.add_argument('--prompt-path', default='report-prompt-v2.md', help='Prompt file path')
-    
+
     args = parser.parse_args()
 
     # Setup logging
     setup_logging("report_generator.log")
-    
+
     # Validate environment variables
     validate_environment()
-    
+
     month = args.month
     session_name = args.session
     target_user = args.target_user
@@ -88,9 +88,9 @@ async def main():
     data_dir = args.data_dir
     reports_dir = args.reports_dir
     prompt_path = args.prompt_path
-    
+
     logger.info(f"🚀 Running report pipeline for month: {month}")
-    
+
     raw_messages_path = f'{data_dir}/raw_messages_{month}.json'
     report_json_path = f'{data_dir}/report_data_{month}.json'
 
@@ -121,9 +121,9 @@ async def main():
             logger.info("✅ Sent days to fill message")
         else:
             logger.info("✅ No days to fill found")
-        
+
         logger.info("✅ Report pipeline completed successfully")
-    
+
     except Exception as e:
         logger.error(f"❌ Report pipeline failed: {e}")
         # Send error notification

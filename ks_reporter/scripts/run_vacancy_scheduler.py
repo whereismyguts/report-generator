@@ -39,16 +39,16 @@ async def main():
     parser.add_argument('--target-user', type=int, default=258610595, help='Target user ID')
     parser.add_argument('--once', action='store_true', help='Run once instead of continuously')
     parser.add_argument('--daemon', action='store_true', help='Run as daemon (background)')
-    
+
     args = parser.parse_args()
-    
+
     # Setup logging
     log_level = logging.INFO if not args.daemon else logging.WARNING
     setup_logging("vacancy_scheduler.log", log_level)
-    
+
     # Validate environment
     validate_environment()
-    
+
     try:
         if args.once:
             logger.info("🔄 Running vacancy check once")
@@ -58,7 +58,7 @@ async def main():
             logger.info("🚀 Starting continuous vacancy scheduler")
             # This doesn't return as it runs forever
             run_continuously(args)
-            
+
     except Exception as e:
         logger.error(f"❌ Scheduler failed: {e}")
         raise

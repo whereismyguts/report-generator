@@ -24,11 +24,11 @@ logger = logging.getLogger(__name__)
 
 class ReportFormatter:
     """Formats report data into Excel documents - matches working example"""
-    
+
     def __init__(self, reports_dir: str = 'reports'):
         self.reports_dir = Path(reports_dir)
         self.reports_dir.mkdir(exist_ok=True)
-    
+
     def load_json_data(self, json_path: str) -> Optional[Dict]:
         """Load report data from JSON file"""
         try:
@@ -37,12 +37,12 @@ class ReportFormatter:
         except (FileNotFoundError, json.JSONDecodeError) as e:
             logger.error(f"❌ Failed to load JSON data: {e}")
             return None
-    
+
     def create_excel_report(self, data: Dict, output_path: Optional[str] = None) -> str:
         """Create Excel report from JSON data - matches working example logic"""
         if not data or 'days' not in data:
             raise ValueError("No valid report data provided")
-            
+
         logger.info("📊 Creating Excel workbook...")
 
         wb = Workbook()
@@ -78,13 +78,13 @@ class ReportFormatter:
                 project_type = "meet" if task.get('type') == 'meeting' else "dev"
                 task_description = task.get('description', task.get('task', ''))
                 duration = task.get('duration', 0)
-                
+
                 # Add to main table
                 ws.cell(row=current_row, column=1, value=date)
                 ws.cell(row=current_row, column=2, value=project_type)
                 ws.cell(row=current_row, column=3, value=task_description)
                 ws.cell(row=current_row, column=4, value=duration)
-                
+
                 # Store for summary calculation
                 all_records.append({
                     'date': date,
@@ -92,7 +92,7 @@ class ReportFormatter:
                     'description': task_description,
                     'duration': duration
                 })
-                
+
                 current_row += 1
                 record_count += 1
 
@@ -161,7 +161,7 @@ class ReportFormatter:
 
         # Ensure directory exists
         output_file_path.parent.mkdir(exist_ok=True)
-        
+
         try:
             wb.save(str(output_file_path))
             logger.info(f"✅ Excel report saved successfully: {output_file_path}")

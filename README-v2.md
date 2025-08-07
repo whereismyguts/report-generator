@@ -5,12 +5,14 @@ A comprehensive Telegram-based system for generating activity reports and filter
 ## 🌟 Features
 
 ### 📊 **Report Generation**
+
 - **Automated monthly reports** from Telegram activity logs
 - **AI-powered content analysis** using OpenRouter API
 - **Excel report generation** with detailed task breakdown
 - **Telegram delivery** of generated reports
 
 ### 🎯 **Vacancy Filter**
+
 - **Multi-channel monitoring** of 12+ job boards
 - **AI-powered matching** against your resume and preferences
 - **Smart filtering** with relevance scoring
@@ -50,7 +52,7 @@ ks_reporter/
 
 ### 📋 Prerequisites
 
-1. **Python 3.8+** 
+1. **Python 3.8+**
 2. **Telegram API credentials** (api_id, api_hash, phone)
 3. **OpenRouter API key** for AI processing
 4. **Active Telegram account** subscribed to relevant channels
@@ -93,6 +95,7 @@ TELEGRAM_CHANNEL_ID=your_channel_id
 ### 📝 Configuration Files
 
 #### `resume.json` - Your professional profile
+
 ```json
 {
   "personal_info": {
@@ -114,6 +117,7 @@ TELEGRAM_CHANNEL_ID=your_channel_id
 ```
 
 #### `vacancy-filter-prompt.md` - AI filtering instructions
+
 Template for how AI should evaluate job vacancies against your profile.
 
 ## 🚀 Usage
@@ -121,6 +125,7 @@ Template for how AI should evaluate job vacancies against your profile.
 ### 📊 Report Generation
 
 #### Generate Monthly Report (Full Pipeline)
+
 ```bash
 # Generate report for specific month
 python -m ks_reporter.scripts.run_report_pipeline --month 2025-07 --session session-3 --target-user 258610595
@@ -130,6 +135,7 @@ python -m ks_reporter.scripts.run_report_pipeline --month 2025-07 --skip-fetch -
 ```
 
 #### Manual Steps
+
 ```bash
 # 1. Fetch Telegram messages
 python telegram_retriever.py --month 2025-07
@@ -144,6 +150,7 @@ python report_v2.py -f data/report_data_2025-07.json
 ### 🎯 Vacancy Filter
 
 #### Initial Setup
+
 ```bash
 # Run setup wizard
 python -m ks_reporter.scripts.setup_vacancy_filter
@@ -153,6 +160,7 @@ python -m ks_reporter.scripts.setup_vacancy_filter --check-only
 ```
 
 The setup will:
+
 1. ✅ Validate environment variables
 2. ✅ Check required files (resume.json, prompt template)
 3. 🔍 Discover your subscribed Telegram channels
@@ -161,6 +169,7 @@ The setup will:
 6. 🧪 Test the filtering system
 
 #### Manual Vacancy Check
+
 ```bash
 # Check for vacancies in last 24 hours
 python -m ks_reporter.scripts.run_vacancy_filter --hours 24 --session session-3 --target-user 258610595
@@ -173,6 +182,7 @@ python -m ks_reporter.scripts.run_vacancy_filter --channels -1001803553802 -1001
 ```
 
 #### Automated Scheduling
+
 ```bash
 # Run once and exit
 python -m ks_reporter.scripts.run_vacancy_scheduler --once --session session-3 --target-user 258610595
@@ -199,6 +209,7 @@ The system monitors these job boards automatically:
 ## 🔄 Automation Options
 
 ### Cron Jobs (Linux/Mac)
+
 ```bash
 # Daily vacancy check at 9 AM
 0 9 * * * cd /path/to/project && python -m ks_reporter.scripts.run_vacancy_scheduler --once
@@ -208,6 +219,7 @@ The system monitors these job boards automatically:
 ```
 
 ### Background Process
+
 ```bash
 # Run vacancy scheduler continuously
 nohup python -m ks_reporter.scripts.run_vacancy_scheduler --continuous &
@@ -234,6 +246,7 @@ vacancy_config.json           # Vacancy filter configuration
 ## 🛠️ Configuration
 
 ### Vacancy Filter Settings (`vacancy_config.json`)
+
 ```json
 {
   "filtering_config": {
@@ -259,21 +272,25 @@ vacancy_config.json           # Vacancy filter configuration
 ### Common Issues
 
 **No messages found**
+
 - Check channel subscriptions in Telegram
 - Verify channel IDs in configuration
 - Increase time range (`--hours` parameter)
 
 **AI filtering failed**
+
 - Check OpenRouter API key
 - Verify prompt template exists
 - Check API quota/limits
 
 **Telegram connection issues**
+
 - Verify API credentials in `.env`
 - Check session files (`session-3.session`)
 - Ensure phone number is correct
 
 ### Debug Mode
+
 ```bash
 # Enable verbose logging
 export LOG_LEVEL=DEBUG
