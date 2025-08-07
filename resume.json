@@ -11,10 +11,7 @@
   },
   "skills": {
     "programming_languages": [
-      "Python",
-      "JavaScript",
-      "TypeScript",
-      "Go"
+      "Python"
     ],
     "frameworks": [
       "Django",
@@ -68,7 +65,10 @@
       "Django",
       "FastAPI",
       "PostgreSQL",
-      "Docker"
+      "MongoDB",
+      "Docker",
+      "git",
+      "Linux"
     ],
     "avoid_technologies": [
       "PHP",
@@ -77,12 +77,16 @@
     ],
     "avoid_keywords": [
       "junior",
-      "intern"
+      "intern",
+      "entry-level",
+      "trainee",
+      "unpaid",
+      "volunteer"
     ]
   },
   "scoring_weights": {
     "salary_match": 0.3,
-    "skills_match": 0.4,
+    "skills_match": 0.6,
     "location_match": 0.2,
     "company_preference": 0.1
   }
