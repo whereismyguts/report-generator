@@ -82,10 +82,10 @@ async def main():
         
         # Send results
         if not args.dry_run:
-            await vacancy_filter.send_results(top_vacancies, args.target_user)
+            await vacancy_filter.send_results(top_vacancies, args.target_user, messages)
         else:
             logger.info("🧪 Dry run mode - results not sent")
-            print("\n" + vacancy_filter.format_vacancy_message(top_vacancies))
+            print("\n" + vacancy_filter.format_vacancy_message(top_vacancies, messages))
         
         logger.info("✅ Vacancy filtering completed successfully")
         

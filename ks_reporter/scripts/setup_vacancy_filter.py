@@ -165,7 +165,7 @@ async def test_vacancy_filtering():
             print(f"✅ Found {len(top_vacancies)} matching vacancies!")
             
             # Display results
-            formatted_message = vacancy_filter.format_vacancy_message(top_vacancies)
+            formatted_message = vacancy_filter.format_vacancy_message(top_vacancies, messages)
             print("\n" + "="*50)
             print(formatted_message)
             print("="*50)

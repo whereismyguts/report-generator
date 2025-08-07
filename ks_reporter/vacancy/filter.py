@@ -159,32 +159,49 @@ class VacancyFilter:
         return prompt
     
     async def filter_vacancies(self, messages: List[Dict]) -> Optional[Dict]:
-        """Filter vacancies using AI"""
+        """Filter vacancies using AI in batches"""
         if not messages:
             logger.info("📭 No messages to filter")
             return None
             
         logger.info(f"🤖 Filtering {len(messages)} messages with AI...")
         
-        # Prepare prompt
-        prompt = self.prepare_ai_prompt(messages)
+        # Process messages in smaller batches to avoid AI response size limits
+        batch_size = 50  # Smaller batch size for better reliability
+        all_vacancies = []
         
-        # Process links in messages
+        # Process links in all messages first
         await self._process_message_links(messages)
         
-        # Make AI API call
-        response = self.ai_client.call_ai_api(prompt)
-        result = self.ai_client.extract_json_from_response(response)
+        for i in range(0, len(messages), batch_size):
+            batch = messages[i:i + batch_size]
+            batch_num = (i // batch_size) + 1
+            total_batches = (len(messages) + batch_size - 1) // batch_size
+            
+            logger.info(f"📦 Processing batch {batch_num}/{total_batches} ({len(batch)} messages)")
+            
+            # Prepare prompt for this batch
+            prompt = self.prepare_ai_prompt(batch)
+            
+            # Make AI API call
+            response = self.ai_client.call_ai_api(prompt)
+            result = self.ai_client.extract_json_from_response(response)
+            
+            if result and result.get('vacancies'):
+                batch_vacancies = result.get('vacancies', [])
+                all_vacancies.extend(batch_vacancies)
+                logger.info(f"✅ Batch {batch_num}: Found {len(batch_vacancies)} vacancies")
+            else:
+                logger.warning(f"⚠️ Batch {batch_num}: No valid results")
         
-        if result:
-            vacancies = result.get('vacancies', [])
-            logger.info(f"✅ AI found {len(vacancies)} matching vacancies")
+        if all_vacancies:
+            logger.info(f"✅ AI found {len(all_vacancies)} matching vacancies total")
             
-            # Save raw results
+            # Save results
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            self.data_manager.save_json(result, f"vacancy_results_{timestamp}.json")
+            self.data_manager.save_json({'vacancies': all_vacancies}, f"vacancy_results_{timestamp}.json")
             
-            return result
+            return {'vacancies': all_vacancies}
         else:
             logger.error("❌ Failed to get valid response from AI")
             return None
@@ -217,7 +234,9 @@ class VacancyFilter:
         sorted_vacancies = sorted(vacancies, key=lambda x: x.get('score', 0), reverse=True)
         
         # Filter by minimum score and recommendation
-        min_score = self.resume_config.get('scoring_weights', {}).get('min_score', 0.4)
+        min_score = 0.4
+        if self.resume_config and self.resume_config.get('scoring_weights'):
+            min_score = self.resume_config.get('scoring_weights', {}).get('min_score', 0.4)
         good_recommendations = ['apply', 'consider']
         
         filtered_vacancies = [
@@ -234,10 +253,21 @@ class VacancyFilter:
         
         return top_vacancies
     
-    def format_vacancy_message(self, vacancies: List[Dict]) -> str:
+    def format_vacancy_message(self, vacancies: List[Dict], original_messages: Optional[List[Dict]] = None) -> str:
         """Format vacancy results for Telegram message"""
         if not vacancies:
             return "📭 No matching vacancies found in recent messages."
+        
+        # Create lookup for message links by ID
+        message_links = {}
+        if original_messages:
+            for msg in original_messages:
+                msg_id = str(msg.get('id', ''))
+                all_links = []
+                all_links.extend(msg.get('extracted_urls', []))
+                all_links.extend(msg.get('telegram_links', []))
+                if all_links:
+                    message_links[msg_id] = all_links
         
         message = f"🎯 **Found {len(vacancies)} matching vacancies!**\n\n"
         
@@ -248,6 +278,7 @@ class VacancyFilter:
             location = vacancy.get('location', 'Unknown Location')
             salary = vacancy.get('salary', 'Not specified')
             recommendation = vacancy.get('recommendation', 'consider')
+            vacancy_id = str(vacancy.get('id', ''))
             
             emoji = "🔥" if recommendation == "apply" else "💼"
             
@@ -267,18 +298,23 @@ class VacancyFilter:
             if concerns:
                 message += f"⚠️ **Concerns:** {', '.join(concerns[:1])}\n"
             
+            # Add links if available
+            links = message_links.get(vacancy_id, [])
+            if links:
+                message += f"🔗 **Links:** {' | '.join(links[:2])}\n"
+            
             message += "\n"
         
         message += f"📊 Generated on {datetime.now().strftime('%Y-%m-%d %H:%M')}"
         return message
     
-    async def send_results(self, vacancies: List[Dict], target_user: int):
+    async def send_results(self, vacancies: List[Dict], target_user: int, original_messages: Optional[List[Dict]] = None):
         """Send filtered vacancy results to user"""
         if not vacancies:
             logger.info("📭 No vacancies to send")
             return False
         
-        message = self.format_vacancy_message(vacancies)
+        message = self.format_vacancy_message(vacancies, original_messages)
         
         sender = TelegramSender(
             session_name=self.session_name,

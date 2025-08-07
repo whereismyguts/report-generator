@@ -21,7 +21,7 @@ class AIAPIClient:
         if not self.api_key:
             raise ValueError("❌ Missing OPENROUTER_API_KEY environment variable")
     
-    def call_ai_api(self, prompt: str, model: str = "google/gemini-2.0-flash-001", temperature: float = 0.1) -> requests.Response:
+    def call_ai_api(self, prompt: str, model: str = "google/gemini-2.5-flash-lite", temperature: float = 0.1) -> requests.Response:
         """Make API call to AI service"""
         response = requests.post(
             url="https://openrouter.ai/api/v1/chat/completions",

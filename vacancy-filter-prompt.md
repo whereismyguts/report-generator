@@ -18,7 +18,7 @@ For each provided vacancy message, analyze and score it based on the candidate's
 {
   "vacancies": [
     {
-      "id": "unique_identifier",
+      "id": "message_id_from_input",
       "title": "extracted job title",
       "company": "company name if available",
       "location": "job location",
@@ -77,8 +77,9 @@ For each provided vacancy message, analyze and score it based on the candidate's
 
 **OUTPUT REQUIREMENTS**
 
-- Only include vacancies with score >= 0.4
-- Sort by score (highest first)
-- Include maximum 10 best matches
-- Provide clear reasoning for scores
-- Extract all mentioned links and contact information
+* Only include vacancies with score >= 0.4
+* Sort by score (highest first)
+* Include maximum 10 best matches
+* Provide clear reasoning for scores
+* Extract all mentioned links and contact information
+* Use the original message ID as the vacancy ID for link mapping
