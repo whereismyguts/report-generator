@@ -213,9 +213,12 @@ The system monitors these job boards automatically:
 ```bash
 # Daily vacancy check at 9 AM
 0 9 * * * cd /path/to/project && python -m ks_reporter.scripts.run_vacancy_scheduler --once
+````
 
-# Monthly report on 1st day of month
-0 10 1 * * cd /path/to/project && python -m ks_reporter.scripts.run_report_pipeline --month $(date --date='last month' +\%Y-\%m)
+# Monthly report generation on the 1st at 10 AM
+
+```bash
+0 10 1 * * cd /home/karmanov/projects/report-generator && .venv/bin/python -m ks_reporter.scripts.run_report_pipeline --month $(date --date='last month' +\%Y-\%m)  >> /home/karmanov/projects/report-generator/logs/report.log 2>&1
 ```
 
 ### Background Process
@@ -310,19 +313,3 @@ python -m ks_reporter.scripts.run_vacancy_filter --dry-run
 - Telegram session files contain authentication data
 - API keys should be kept secure
 - Consider using environment variables in production
-
-## 🎯 Next Steps
-
-1. **Set up automation** with cron jobs or systemd services
-2. **Customize prompts** for better vacancy matching
-3. **Add more channels** as needed
-4. **Monitor logs** for performance optimization
-5. **Backup configuration** regularly
-
----
-
-## 📞 Support
-
-For issues and feature requests, check the logs in `logs/` directory and ensure all environment variables are properly configured.
-
-**Happy job hunting and reporting! 🚀**

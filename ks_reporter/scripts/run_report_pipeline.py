@@ -32,7 +32,13 @@ async def run_generate(month, prompt_path, raw_messages_path, output_path):
     """Generate report data from raw messages"""
     logger.info(f"🤖 Generating report data for {month}")
     generator = ReportGenerator()
-    output_path, content = generator.generate_report_data(prompt_path, raw_messages_path, output_path)
+    output_path, content = generator.generate_report_data(
+        prompt_path,
+        raw_messages_path,
+        output_path,
+        month,
+    )
+
     return output_path, content
 
 

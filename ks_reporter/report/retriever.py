@@ -47,7 +47,8 @@ class TelegramLogRetriever:
 
             # Calculate date range
             start_date = datetime.strptime(month, '%Y-%m')
-            end_date = datetime(start_date.year, start_date.month + 1, 1)
+            # end_date = datetime(start_date.year, start_date.month + 1, 1)
+            end_date = datetime.now()
 
             # Adjust for year boundary
             if start_date.month == 12:

@@ -21,7 +21,13 @@ class ReportGenerator:
         self.ai_client = AIAPIClient()
         self.data_manager = DataManager()
 
-    def generate_report_data(self, prompt_path: str, raw_messages_path: str, output_path: str) -> Tuple[str, Dict]:
+    def generate_report_data(
+        self,
+        prompt_path: str,
+        raw_messages_path: str,
+        output_path: str,
+        month: str,
+    ) -> Tuple[str, Dict]:
         """Generate report data from raw messages using AI"""
         logger.info(f"🤖 Generating report data using prompt {prompt_path}")
 
@@ -47,16 +53,9 @@ class ReportGenerator:
                 if not content:
                     logger.error("❌ Failed to extract valid JSON from AI response")
                     raise Exception("Report generation failed: Invalid response format")
+                # logger.debug(f"AI response content: {json.dumps(content, indent=2, ensure_ascii=False)}")
 
-                # Process days (add any post-processing here)
-                # Extract month from the data for processing
-                month_for_processing = None
-                if 'days' in content and content['days']:
-                    first_date = content['days'][0].get('date', '')
-                    if first_date:
-                        month_for_processing = first_date[:7]  # YYYY-MM format
-
-                content = self._process_days(content, month_for_processing)
+                content = self._process_days(content, month)
 
                 # Save output
                 with open(output_path, 'w', encoding='utf-8') as f:
