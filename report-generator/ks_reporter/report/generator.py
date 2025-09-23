@@ -117,3 +117,22 @@ class ReportGenerator:
         content['days-to-fill'] = days_to_fill
         content['days'] = days
         return content
+
+
+if __name__ == "__main__":
+
+    raw_data = 'report-generator/data/raw_messages_2025-09.json'
+
+    prompt_path = 'report-prompt-v2.md'
+    raw_messages_path = 'data/raw_messages_2025-09.json'
+    output_json_path = f'data/report_data_2025-09.json'
+    generator = ReportGenerator()
+
+    data = generator.generate_report_data(
+        prompt_path=prompt_path,
+        raw_messages_path=raw_messages_path,
+        output_path=output_json_path,
+        month='2025-09',
+    )
+
+    

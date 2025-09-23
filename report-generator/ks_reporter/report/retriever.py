@@ -20,9 +20,17 @@ logger = logging.getLogger(__name__)
 class TelegramLogRetriever:
     """Retrieves and stores logs from Telegram channels"""
 
-    def __init__(self, session_name: str = 'session-3'):
+    async def get_channel_entity(self):
+        """Resolve the channel entity (awaitable)"""
+        try:
+            return await self.telegram_client.client.get_entity(int(self.channel_id))
+        except ValueError:
+            # Try as username if not a number
+            return await self.telegram_client.client.get_entity(self.channel_id)
+
+    def __init__(self, session_name: str = 'session-3', channel_id=None):
         self.telegram_client = TelegramClientBase(session_name)
-        self.channel_id = os.getenv('TELEGRAM_CHANNEL_ID')  # channel username or id
+        self.channel_id = channel_id or os.getenv('TELEGRAM_CHANNEL_ID')  # channel username or id
 
         if not self.channel_id:
             raise ValueError("❌ Missing TELEGRAM_CHANNEL_ID environment variable")
@@ -38,13 +46,6 @@ class TelegramLogRetriever:
         try:
             await self.telegram_client.client.start(phone=self.telegram_client.phone)
 
-            # Resolve channel entity
-            try:
-                channel_entity = await self.telegram_client.client.get_entity(int(self.channel_id))
-            except ValueError:
-                # Try as username if not a number
-                channel_entity = await self.telegram_client.client.get_entity(self.channel_id)
-
             # Calculate date range
             start_date = datetime.strptime(month, '%Y-%m')
             # end_date = datetime(start_date.year, start_date.month + 1, 1)
@@ -59,8 +60,11 @@ class TelegramLogRetriever:
 
             messages = []
 
+            # resolve entity before iterating messages
+            channel = await self.get_channel_entity()
+
             async for message in self.telegram_client.client.iter_messages(
-                channel_entity,
+                channel,
                 reverse=True
             ):
                 # Check if message is within target month
@@ -106,3 +110,21 @@ class TelegramLogRetriever:
         filepath = self.save_raw_data(messages, month)
 
         return filepath
+
+
+if __name__ == "__main__":
+    import argparse
+    import asyncio
+
+    parser = argparse.ArgumentParser(description="Retrieve Telegram logs for report generation")
+    parser.add_argument('--month', type=str, help="Target month in YYYY-MM format (default: current month)")
+    parser.add_argument('--session-name', type=str, default='session-3', help="Telegram session name (default: session-3)")
+
+    args = parser.parse_args()
+
+    retriever = TelegramLogRetriever(session_name=args.session_name)
+
+    month = args.month if args.month else datetime.now().strftime('%Y-%m')
+
+    result = asyncio.run(retriever.retrieve_monthly_logs(month))
+    print(f"Raw messages saved to: {result}")
