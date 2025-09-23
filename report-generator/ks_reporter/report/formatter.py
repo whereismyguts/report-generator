@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 
 class ReportFormatter:
-    """Formats report data into Excel documents - matches working example"""
+    """Formats report data into Excel documents - matches working example logic"""
 
     def __init__(self, reports_dir: str = 'reports'):
         self.reports_dir = Path(reports_dir)

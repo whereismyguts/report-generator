@@ -1,3 +1,0 @@
-"""
-Vacancy filtering module
-"""
