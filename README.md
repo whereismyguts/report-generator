@@ -1,23 +1,24 @@
-# Automated Monthly Reporting System
+# report-generator (minimal)
 
-## Manual Execution
+Minimal project to generate monthly reports from Telegram messages.
 
-Fetch telegram logs:
+Install
 
-`python telegram_retriever.py --month 2025-06`
+```bash
+python -m venv .venv
+.venv/bin/python -m pip install -r report-generator/requirements.txt
+```
 
-Generate json by llm using telegram logs:
+Run (defaults to last month)
 
-`python generate_report_data.py -m 2025-06`
+```bash
+cd report-generator && ../.venv/bin/python -m ks_reporter.scripts.run_report_pipeline --month $(date --date='last month' +%Y-%m)
+```
 
-Save report:
+Cron (1st day of month at 10:00, logs to repo logs)
 
-`python report-v2.py -f data/report_data_2025-06.json`
-
-## One run
-
-`python run_full_pipeline.py --month 2025-06`
-
-`python run_full_pipeline.py --month $(date --date='last month' +\%Y-\%m)`
+```cron
+0 10 1 * * cd /home/karmanov/projects/report-generator/report-generator && ../.venv/bin/python -m ks_reporter.scripts.run_report_pipeline --month $(date --date='last month' +\%Y-\%m) >> /home/karmanov/projects/report-generator/logs/report.log 2>&1
+```
 
 
