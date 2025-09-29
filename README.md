@@ -36,3 +36,7 @@ The first run will create a session file for the Telegram API. You will need to 
 - Add support for additional data sources (Jira, GitHub, Google Calendar) via a pluggable retriever interface.
 - Introduce prompt template versioning and maintain a suite of prompt-output regression tests (store prompts in `report-generator/prompts/`).
 - Configure log rotation using `logging.handlers.RotatingFileHandler`.
+
+## Licence
+
+MIT
