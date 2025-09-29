@@ -1,6 +1,7 @@
 from pathlib import Path
 import json
 from typing import Any, Optional
+import pandas as pd
 
 
 class DataManager:
@@ -20,3 +21,9 @@ class DataManager:
             return None
         with open(path, 'r', encoding='utf-8') as f:
             return json.load(f)
+
+    def save_csv(self, data: Any, filename: str) -> str:
+        path = self.data_dir / filename
+        df = pd.DataFrame(data)
+        df.to_csv(path, index=False, encoding='utf-8')
+        return str(path)

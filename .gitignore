@@ -64,7 +64,7 @@ htmlcov/
 
 *.log
 
-## 
 
 reports/
 data/
+**/web_cache/
